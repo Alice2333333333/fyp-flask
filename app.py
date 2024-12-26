@@ -46,13 +46,13 @@ def receive_asset_id():
         if isinstance(monitor_data, tuple):
             return monitor_data
 
-        subcollection_ref = asset_doc_ref.collection("data")
+        subcollection_ref = asset_doc_ref.collection("usage_data")
         for item in monitor_data:
-            status = item['status']
-            count = item['count']
+            date = item['date']
+            usage_hours = item['usage_hours']
 
-            subcollection_ref.document(status).set({
-                "count": count,
+            subcollection_ref.document(date).set({
+                "usage_hours": usage_hours,
             }, merge=True)
 
         print(f"Monitor usage data inserted into subcollection for Asset ID {assetid}")
@@ -61,14 +61,6 @@ def receive_asset_id():
     except Exception as e:
         print(f"Error: {e}")
         return jsonify({"error": str(e)}), 500
-    # data = request.get_json()
-    # assetid = data.get('assetid')
-
-    # if assetid:
-    #     print(f"Received Asset ID: {assetid}")
-    #     return jsonify({"message": "Asset ID received successfully"}), 200
-    # else:
-    #     return jsonify({"error": "No Asset ID provided"}), 400
 
 if __name__ == "__main__":
     app.run(host="0.0.0.0", port=5000, debug=True)
